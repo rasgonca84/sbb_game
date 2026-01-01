@@ -2,15 +2,16 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<title>SBB Ticket Machine</title>
 <style>
   /* ================================================================
-     CONFIGURAÇÕES GERAIS E VARIÁVEIS
+     CONFIGURAÇÕES GERAIS
      ================================================================ */
   :root {
     --sbb-blue: #0f2c68;
-    --sbb-red: #eb0000;
+    --sbb-red: #d60000;
     --sbb-yellow: #ffcc00;
-    --machine-width: 480px; /* Largura aumentada conforme solicitado */
+    --machine-width: 480px; /* Largura com folga */
     --machine-height: 820px;
   }
 
@@ -24,7 +25,7 @@
     margin: 0;
   }
 
-  /* --- ESTRUTURA EXTERNA (SHELL) --- */
+  /* --- CARCAÇA (SHELL) --- */
   .machine-shell {
     width: var(--machine-width);
     height: var(--machine-height);
@@ -37,6 +38,7 @@
     overflow: hidden;
   }
 
+  /* Capô Superior */
   .top-hood {
     height: 85px;
     background: linear-gradient(to bottom, var(--sbb-blue) 0%, #1a3b8e 50%, var(--sbb-blue) 100%);
@@ -70,20 +72,22 @@
     gap: 20px;
   }
 
-  /* --- LOGO SBB --- */
+  /* --- LOGO SBB (Arquivo Externo) --- */
   .logo-container {
     position: absolute;
     top: 20px; 
     right: 25px;
-    width: 140px; 
+    width: 130px; 
     height: auto;
-    z-index: 5;
+    z-index: 20; /* Z-index alto para garantir que fique visível */
   }
   
   .logo-img {
     width: 100%;
     height: auto;
     display: block;
+    /* Se o seu arquivo for JPG (fundo branco), descomente a linha abaixo para misturar: */
+    /* mix-blend-mode: multiply; */
   }
 
   /* --- COLUNA ESQUERDA --- */
@@ -92,42 +96,27 @@
     align-items: center;
   }
 
-  /* --- ÁREA DO MAPA --- */
+  /* --- ÁREA DO MAPA (Arquivo Externo) --- */
   .map-area {
     width: 100%;
     height: 170px;
-    background: #e6e8e9; /* Cor de fundo caso a imagem falhe */
+    background: #e6e8e9; 
     border: 1px solid #aaa;
     margin-bottom: 30px;
     position: relative;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #555;
-    font-size: 11px;
+    overflow: hidden; 
   }
 
   .map-area img {
     width: 100%;
     height: 100%;
     object-fit: cover; 
-    object-position: top center; /* Foca no topo do mapa onde estão as zonas principais */
+    object-position: center; 
     display: block;
   }
 
-  /* Mensagem de erro amigável se a imagem sumir */
-  .map-placeholder {
-    padding: 10px;
-    line-height: 1.4;
-  }
-
-  /* ================================================================
-     BLOQUEIO DE CONFIGURAÇÃO: CAIXA VERMELHA E TELA
-     ================================================================
-  */
+  /* --- CAIXA VERMELHA (PROTEGIDA) --- */
   .red-housing {
     width: 100%;
     background-color: var(--sbb-red);
@@ -158,7 +147,6 @@
     overflow: hidden;
     font-family: Arial, sans-serif;
   }
-  /* ================================================================ */
 
   /* UI Elements */
   .ui-top-bar { height: 18px; background: #fff; display: flex; justify-content: space-between; padding: 2px 5px; font-size: 8px; color: #555; border-bottom: 1px solid #ccc; }
@@ -203,16 +191,17 @@
 
   <div class="machine-shell">
     <div class="top-hood"><div class="chrome-bar"></div></div>
+    
     <div class="front-face-plate">
       
       <div class="logo-container">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgODAiPgogIDwhLS0gRnVuZG8gVmVybWVsaG8gY29tIFNldGFzIC0tPgogIDxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iODAiIGZpbGw9IiNlYjAwMDAiLz4KICA8cGF0aCBkPSJNNTAgMTUgTDIwIDQwIEw1MCA2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxMiIvPgogIDxwYXRoIGQ9Ik03MCAxNSBMMTAwIDQwIEw3MCA2NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxMiIvPgogIDxsaW5lIHgxPSI2MCIgeTE9IjE1IiB4Mj0iNjAiIHkyPSI2NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxMiIvPgogIAogIDwhLS0gVGV4dG8gU0JCIC0tPgogIDx0ZXh0IHg9IjEzMCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSI1NSIgZmlsbD0iIzAwMCI+U0JCQzwvdGV4dD4KICA8dGV4dCB4PSIyMTAiIHk9IjYwIiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNTUiIGZpbGw9IiMwMDAiPkZGRjwvdGV4dD4KPC9zdmc+" alt="Logo SBB" class="logo-img">
+        <img src="./SBB_CFF_FFS_logo.png" alt="Logo SBB" class="logo-img">
       </div>
 
       <div class="left-column">
         
         <div class="map-area">
-          <img src="./SBB-tariffzonen.png" alt="Zonenplan SBB" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'map-placeholder\'><b>Arquivo não encontrado</b><br>Salve a imagem como:<br><i>SBB-tariffzonen.png</i><br>na mesma pasta deste arquivo.</div>'">
+          <img src="./SBB-tariffzonen.png" alt="Zonenplan SBB">
         </div>
         
         <div class="red-housing">
@@ -233,6 +222,7 @@
         </div>
 
       </div>
+
       <div class="right-column">
         <div style="width:30px; height:30px; background:radial-gradient(circle, #666 1px, transparent 2px); background-size: 4px 4px; opacity:0.5;"></div>
         <div><div class="device-label">Coins</div><div class="coin-entry"><div class="coin-slot-hole"></div></div></div>
@@ -241,6 +231,7 @@
         <div><div class="small-ticket-slot"></div></div>
       </div>
     </div>
+
     <div class="tray-large"></div>
     <div class="base-footer"><div class="maintenance-door"><div class="lock"></div></div></div>
   </div>
