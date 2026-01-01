@@ -10,7 +10,8 @@
     --sbb-blue: #0f2c68;
     --sbb-red: #d60000;
     --sbb-yellow: #ffcc00;
-    --machine-width: 440px;
+    /* LARGURA AUMENTADA para mais folga (era 440px) */
+    --machine-width: 480px;
     --machine-height: 820px;
   }
 
@@ -67,15 +68,15 @@
     padding: 25px;
     display: grid;
     grid-template-columns: 2.1fr 0.9fr;
-    gap: 15px;
+    gap: 20px; /* Aumentei um pouco o gap também para dar mais ar */
   }
 
-  /* --- LOGO SBB (Atualizado para Imagem) --- */
+  /* --- LOGO SBB (Atualizado para PNG transparente) --- */
   .logo-container {
     position: absolute;
     top: 20px; 
     right: 25px;
-    width: 120px; /* Largura ajustada para o logo */
+    width: 130px; /* Ligeiramente maior para compensar a largura extra da máquina */
     height: auto;
     z-index: 5;
   }
@@ -84,9 +85,7 @@
     width: 100%;
     height: auto;
     display: block;
-    /* TRUQUE PRO: Multiplicação faz o branco do JPG sumir no metal */
-    mix-blend-mode: multiply; 
-    opacity: 0.9;
+    /* mix-blend-mode removido pois agora usamos PNG transparente */
   }
 
   /* --- COLUNA ESQUERDA --- */
@@ -197,7 +196,7 @@
     <div class="front-face-plate">
       
       <div class="logo-container">
-        <img src="./SBB_CFF_FFS_logo.jpg" alt="Logo SBB" class="logo-img">
+        <img src="./SBB_CFF_FFS_logo.png" alt="Logo SBB" class="logo-img">
       </div>
 
       <div class="left-column">
